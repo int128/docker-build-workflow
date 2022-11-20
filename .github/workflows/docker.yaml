@@ -58,33 +58,16 @@ jobs:
           cache-from: ${{ steps.cache.outputs.cache-from }}
           cache-to: ${{ steps.cache.outputs.cache-to }}
           platforms: ${{ matrix.platform }}
-
-  push:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
       - uses: docker/metadata-action@v4
-        id: metadata
+        id: metadata-without-flavor
         with:
           images: ghcr.io/${{ github.repository }}
           flavor: latest=false
-      - uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - run: |
-          docker manifest create ${{ steps.metadata.outputs.tags }} \
-            ${{ steps.metadata.outputs.tags }}-linux-amd64 \
-            ${{ steps.metadata.outputs.tags }}-linux-arm64 \
-            ${{ steps.metadata.outputs.tags }}-linux-ppc64le
-      - run: docker manifest push ${{ steps.metadata.outputs.tags }}
+      - run: docker manifest create --amend ${{ steps.metadata.metadata-without-flavor.tags }} ${{ steps.build.outputs.imageid }}
 
   test:
     needs:
-      - push
+      - build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
