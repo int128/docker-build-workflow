@@ -84,7 +84,7 @@ jobs:
 
   test:
     needs:
-      - push
+      - build-multi-architecture
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
