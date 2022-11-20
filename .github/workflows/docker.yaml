@@ -1,0 +1,96 @@
+name: docker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/docker.yaml
+      - Dockerfile
+      - go.*
+      - main.go
+    tags:
+      - v*
+  pull_request:
+    paths:
+      - .github/workflows/docker.yaml
+      - Dockerfile
+      - go.*
+      - main.go
+
+concurrency:
+  group: ${{ github.workflow }}--${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+          - linux/ppc64le
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: suffix=-${{ matrix.platform }}
+      - uses: int128/docker-build-cache-config-action@v1
+        id: cache
+        with:
+          image: ghcr.io/${{ github.repository }}/cache
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/build-push-action@v3
+        id: build
+        with:
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          cache-from: ${{ steps.cache.outputs.cache-from }}
+          cache-to: ${{ steps.cache.outputs.cache-to }}
+          platforms: ${{ matrix.platform }}
+
+  push:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: latest=false
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - run: |
+          docker manifest create ${{ steps.metadata.outputs.tags }} \
+            ${{ steps.metadata.outputs.tags }}-linux-amd64 \
+            ${{ steps.metadata.outputs.tags }}-linux-arm64 \
+            ${{ steps.metadata.outputs.tags }}-linux-ppc64le
+      - run: docker manifest push ${{ steps.metadata.outputs.tags }}
+
+  test:
+    needs:
+      - push
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: latest=false
+      - run: docker run --rm ${{ steps.metadata.outputs.tags }}
