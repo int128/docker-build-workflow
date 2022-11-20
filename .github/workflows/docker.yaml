@@ -63,7 +63,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           flavor: latest=false
-      - run: docker manifest create --amend ${{ steps.metadata.metadata-without-flavor.tags }} ${{ steps.build.outputs.imageid }}
+      - run: docker manifest create --amend ${{ steps.metadata-without-flavor.outputs.tags }} ${{ steps.build.outputs.imageid }}
 
   test:
     needs:
