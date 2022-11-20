@@ -18,6 +18,10 @@ on:
       - go.*
       - main.go
 
+concurrency:
+  group: ${{ github.workflow }}--${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     strategy:
