@@ -48,6 +48,7 @@ jobs:
         id: cache
         with:
           image: ghcr.io/${{ github.repository }}/cache
+          tag-suffix: -${{ matrix.platform }}
       - uses: docker/setup-buildx-action@v2
       - uses: docker/build-push-action@v3
         with:
