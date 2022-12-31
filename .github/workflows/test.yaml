@@ -3,7 +3,7 @@ name: test
 on:
   push:
     branches:
-      - main
+      - v1
     paths:
       - .github/workflows/test.yaml
       - fixtures/**
