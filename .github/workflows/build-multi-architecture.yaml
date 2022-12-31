@@ -21,9 +21,9 @@ jobs:
         platform: ${{ fromJSON(inputs.platforms) }}
     uses: ./.github/workflows/build.yaml
     with:
-      context: ${{ input.context }}
-      platform: ${{ input.platform }}
-      suffix: -${{ input.platform }}
+      context: ${{ inputs.context }}
+      platform: ${{ inputs.platform }}
+      suffix: -${{ inputs.platform }}
 
   multi-architecture:
     needs:

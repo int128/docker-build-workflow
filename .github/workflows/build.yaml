@@ -34,12 +34,12 @@ jobs:
         id: metadata
         with:
           images: ghcr.io/${{ github.repository }}
-          flavor: suffix=${{ input.suffix }}
+          flavor: suffix=${{ inputs.suffix }}
       - uses: int128/docker-build-cache-config-action@v1
         id: cache
         with:
           image: ghcr.io/${{ github.repository }}/cache
-          tag-suffix: ${{ input.suffix }}
+          tag-suffix: ${{ inputs.suffix }}
       - uses: docker/setup-buildx-action@v2
       - uses: docker/build-push-action@v3
         id: build
@@ -49,5 +49,5 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           cache-from: ${{ steps.cache.outputs.cache-from }}
           cache-to: ${{ steps.cache.outputs.cache-to }}
-          context: ${{ input.context }}
-          platforms: ${{ input.platform }}
+          context: ${{ inputs.context }}
+          platforms: ${{ inputs.platform }}
