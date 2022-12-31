@@ -16,7 +16,9 @@ on:
         type: string
         required: false
     outputs:
-      digest: ${{ jobs.build.outputs.digest }}
+      digest:
+        description: image digest (e.g. sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef)
+        value: ${{ jobs.build.outputs.digest }}
 
 jobs:
   build:
