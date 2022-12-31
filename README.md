@@ -1,8 +1,6 @@
-# docker-build-workflow [![docker](https://github.com/int128/docker-build-workflow/actions/workflows/docker.yaml/badge.svg)](https://github.com/int128/docker-build-workflow/actions/workflows/docker.yaml)
+# docker-build-workflow [![test](https://github.com/int128/docker-build-workflow/actions/workflows/test.yaml/badge.svg)](https://github.com/int128/docker-build-workflow/actions/workflows/test.yaml)
 
-This is an example of workflow to build a Docker image in GitHub Actions.
-
-See [`docker.yaml`](.github/workflows/docker.yaml).
+This is a set of reusable workflows to build a Docker image in GitHub Actions.
 
 ## Features
 

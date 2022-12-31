@@ -1,0 +1,55 @@
+name: build-multi-architecture
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        description: build context
+        type: string
+        required: false
+      platforms:
+        description: platforms (JSON string)
+        type: string
+        default: |
+          ["linux/amd64", "linux/arm64"]
+
+jobs:
+  for:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(inputs.platforms) }}
+    uses: ./.github/workflows/build.yaml
+    with:
+      context: ${{ inputs.context }}
+      platform: ${{ matrix.platform }}
+      suffix: -${{ matrix.platform }}
+
+  multi-architecture:
+    needs:
+      - for
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+      - uses: actions/github-script@v6
+        id: suffixes
+        env:
+          platforms: ${{ inputs.platforms }}
+        with:
+          result-encoding: string
+          script: |
+            const platforms = JSON.parse(process.env.platforms)
+            return platforms.map((platform) => `-${platform.replaceAll(/\//g, '-')}`).join(`\n`)
+      - uses: int128/docker-manifest-create-action@v1
+        with:
+          tags: ${{ steps.metadata.outputs.tags }}
+          suffixes: ${{ steps.suffixes.outputs.result }}
