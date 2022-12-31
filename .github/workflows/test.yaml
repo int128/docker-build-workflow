@@ -1,0 +1,38 @@
+name: test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test.yaml
+      - fixtures/**
+    tags:
+      - v*
+  pull_request:
+    paths:
+      - .github/workflows/test.yaml
+      - fixtures/**
+
+concurrency:
+  group: ${{ github.workflow }}--${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-multi-architecture.yaml
+    with:
+      context: fixtures
+
+  test:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: docker/metadata-action@v4
+        id: metadata
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: latest=false
+      - run: docker run --rm ${{ steps.metadata.outputs.tags }}
