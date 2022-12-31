@@ -22,8 +22,8 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       context: ${{ inputs.context }}
-      platform: ${{ inputs.platform }}
-      suffix: -${{ inputs.platform }}
+      platform: ${{ matrix.platform }}
+      suffix: -${{ matrix.platform }}
 
   multi-architecture:
     needs:
