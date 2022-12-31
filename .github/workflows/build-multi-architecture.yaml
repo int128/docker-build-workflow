@@ -48,7 +48,7 @@ jobs:
           result-encoding: string
           script: |
             const platforms = JSON.parse(process.env.platforms)
-            return platforms.map((platform) => `-${platform.replaceAll(/\//, '-')}`).join(`\n`)
+            return platforms.map((platform) => `-${platform.replaceAll(/\//g, '-')}`).join(`\n`)
       - uses: int128/docker-manifest-create-action@v1
         with:
           tags: ${{ steps.metadata.outputs.tags }}
