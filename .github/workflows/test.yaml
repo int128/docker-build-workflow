@@ -6,12 +6,16 @@ on:
       - v1
     paths:
       - .github/workflows/test.yaml
+      - .github/workflows/build.yaml
+      - .github/workflows/build-multi-architecture.yaml
       - fixtures/**
     tags:
       - v*
   pull_request:
     paths:
       - .github/workflows/test.yaml
+      - .github/workflows/build.yaml
+      - .github/workflows/build-multi-architecture.yaml
       - fixtures/**
 
 concurrency:
