@@ -11,8 +11,8 @@ on:
         description: target platform
         type: string
         required: false
-      suffix:
-        description: suffix of the image tag
+      flavor:
+        description: metadata flavor (see docker/metadata-action)
         type: string
         required: false
     outputs:
@@ -37,8 +37,7 @@ jobs:
         id: metadata
         with:
           images: ghcr.io/${{ github.repository }}
-          # avoid overwriting the latest tag because metadata-action does not add a suffix to it
-          flavor: latest=false,suffix=${{ inputs.suffix }}
+          flavor: ${{ inputs.flavor }}
       - uses: int128/docker-build-cache-config-action@v1
         id: cache
         with:
