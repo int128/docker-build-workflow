@@ -25,7 +25,6 @@ jobs:
       platform: ${{ matrix.platform }}
       # avoid overwriting the latest tag because metadata-action does not add a suffix to it
       flavor: latest=false,suffix=${{ inputs.suffix }}
-      suffix: -${{ matrix.platform }}
 
   multi-architecture:
     needs:
