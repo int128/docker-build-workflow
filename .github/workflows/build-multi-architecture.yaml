@@ -23,7 +23,8 @@ jobs:
     with:
       context: ${{ inputs.context }}
       platform: ${{ matrix.platform }}
-      suffix: -${{ matrix.platform }}
+      # avoid overwriting the latest tag because metadata-action does not add a suffix to it
+      flavor: latest=false,suffix=-${{ matrix.platform }}
 
   multi-architecture:
     needs:
