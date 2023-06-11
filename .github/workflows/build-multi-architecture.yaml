@@ -22,7 +22,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       context: ${{ inputs.context }}
-      platform: ${{ matrix.platform }}
+      platforms: ${{ matrix.platform }}
       # avoid overwriting the latest tag because metadata-action does not add a suffix to it
       flavor: latest=false,suffix=-${{ matrix.platform }}
 
