@@ -1,4 +1,5 @@
-FROM golang:1.21 as builder
+ARG go_version
+FROM golang:${go_version} as builder
 
 WORKDIR /workspace
 COPY go.* .
