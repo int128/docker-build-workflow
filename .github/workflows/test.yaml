@@ -23,10 +23,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  go-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    outputs:
+      go-version: ${{ steps.go-version.outputs.go-version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: go-version
+        run: echo "go-version=$(sed -ne '/^go /s/^go //p' go.mod)" >> "$GITHUB_OUTPUT"
+        working-directory: fixtures
+
   build:
+    needs: go-version
     uses: ./.github/workflows/build-multi-architecture.yaml
     with:
       context: fixtures
+      build-args: |
+        go_version=${{ needs.go-version.outputs.go-version }}
 
   test:
     needs:
