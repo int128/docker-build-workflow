@@ -12,7 +12,7 @@ on:
         type: string
         required: false
       platforms:
-        description: Platforms (JSON string)
+        description: List of platforms (JSON string)
         type: string
         default: |
           ["linux/amd64", "linux/arm64"]
