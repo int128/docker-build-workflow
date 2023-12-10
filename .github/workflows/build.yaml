@@ -4,20 +4,24 @@ on:
   workflow_call:
     inputs:
       context:
-        description: build context
+        description: context of docker/build-push-action
+        type: string
+        required: false
+      build-args:
+        description: build-args of docker/build-push-action
         type: string
         required: false
       image:
-        description: image name
+        description: images of docker/metadata-action
         type: string
         required: false
         default: ghcr.io/${{ github.repository }}
       platforms:
-        description: target platforms
+        description: platforms of docker/build-push-action
         type: string
         required: false
       flavor:
-        description: metadata flavor (see docker/metadata-action)
+        description: flavor of docker/metadata-action
         type: string
         required: false
     outputs:
@@ -62,4 +66,5 @@ jobs:
           cache-from: ${{ steps.cache.outputs.cache-from }}
           cache-to: ${{ steps.cache.outputs.cache-to }}
           context: ${{ inputs.context }}
+          build-args: ${{ inputs.build-args }}
           platforms: ${{ inputs.platforms }}

@@ -4,11 +4,15 @@ on:
   workflow_call:
     inputs:
       context:
-        description: build context
+        description: context of docker/build-push-action
+        type: string
+        required: false
+      build-args:
+        description: build-args of docker/build-push-action
         type: string
         required: false
       platforms:
-        description: platforms (JSON string)
+        description: Platforms (JSON string)
         type: string
         default: |
           ["linux/amd64", "linux/arm64"]
@@ -22,6 +26,7 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       context: ${{ inputs.context }}
+      build-args: ${{ inputs.build-args }}
       platforms: ${{ matrix.platform }}
       # avoid overwriting the latest tag because metadata-action does not add a suffix to it
       flavor: latest=false,suffix=-${{ matrix.platform }}
