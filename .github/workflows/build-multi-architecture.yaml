@@ -55,7 +55,7 @@ jobs:
           script: |
             const platforms = JSON.parse(process.env.platforms)
             return platforms.map((platform) => `-${platform.replaceAll(/\//g, '-')}`).join(`\n`)
-      - uses: int128/docker-manifest-create-action@c2b8a8199bbf49c2475f8c80a778afc65fd4198a # v1.9.0
+      - uses: int128/docker-manifest-create-action@3406cb58d017271773ae4da420f70b5e682e4fb3 # v1.10.0
         with:
           tags: ${{ steps.metadata.outputs.tags }}
           suffixes: ${{ steps.suffixes.outputs.result }}
