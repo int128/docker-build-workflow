@@ -6,7 +6,8 @@ COPY go.* .
 RUN go mod download
 
 COPY main.go .
-RUN go build -o main main.go
+RUN --mount=type=cache,from=actions_cache,target=/root/.cache/go-build \
+    go build -o main main.go
 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /

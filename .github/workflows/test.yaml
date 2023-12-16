@@ -39,6 +39,7 @@ jobs:
     uses: ./.github/workflows/build-multi-architecture.yaml
     with:
       context: fixtures
+      mount-actions-cache: true
       build-args: |
         go_version=${{ needs.go-version.outputs.go-version }}
 

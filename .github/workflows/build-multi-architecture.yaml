@@ -16,6 +16,10 @@ on:
         type: string
         default: |
           ["linux/amd64", "linux/arm64"]
+      mount-actions-cache:
+        description: If set, mount actions/cache into the builder container
+        type: boolean
+        required: false
 
 jobs:
   for:
@@ -30,6 +34,7 @@ jobs:
       platforms: ${{ matrix.platform }}
       # avoid overwriting the latest tag because metadata-action does not add a suffix to it
       flavor: latest=false,suffix=-${{ matrix.platform }}
+      mount-actions-cache: ${{ inputs.mount-actions-cache }}
 
   multi-architecture:
     needs:
